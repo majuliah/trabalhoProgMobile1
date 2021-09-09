@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, TextInput, Platform, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, TextInput, Platform, TouchableOpacity, FlatList } from 'react-native';
 import { Button } from '../components/Button';
 
 
@@ -12,11 +12,12 @@ interface IInformationData{
 }
 
 export function Home() {
-    const [newInformation1, setNewInformation1] = useState('')
-    const [newInformation2, setNewInformation2] = useState('')
-    const [newInformation3, setNewInformation3] = useState('')
+    const [newInformation1, setNewInformation1] = useState('');
+    const [newInformation2, setNewInformation2] = useState('');
+    const [newInformation3, setNewInformation3] = useState('');
 
-    const [myInformations1, setMyInformations1] = useState<IInformationData[]>([])
+    const [myInformations1, setMyInformations1] = useState<IInformationData[]>([]);
+    const [greetings, setGreetings] = useState('');
 
     function handleAddNewInformation(){
         const data = {
@@ -35,36 +36,48 @@ export function Home() {
         
     }
 
+    function handleRemoveInformation( id: string){
+        setMyInformations1(myInformations1 => myInformations1.filter(information => information.id !== id))
+    }
+
+    useEffect(() => {
+        const currentHour = new Date().getHours()
+        if(currentHour < 12){
+            setGreetings('Good Morning :)')
+        }else if( currentHour >= 12 && currentHour < 18){
+            setGreetings('Good Afternoom :)')
+        }else{
+            setGreetings('Good Night :)')
+        }
+    }, [myInformations1])
+
   return (
     <>
     <View style={styles.container}>
       <Text style={styles.title}>Hey You, Welcome!</Text>
 
+      <Text style={styles.greetings}>{greetings}</Text>
+
       <TextInput style={styles.input1} placeholder='Name' placeholderTextColor='#81bb94' value={newInformation1} onChangeText={value => setNewInformation1(value)} returnKeyType={'done'}/>
       <TextInput style={styles.input2} placeholder='Telephone' placeholderTextColor='#e4c081' value={newInformation2} onChangeText={value => setNewInformation2(value)} returnKeyType={'done'} />
       <TextInput style={styles.input3} placeholder='Email' placeholderTextColor='#e6a6a6' value={newInformation3} onChangeText={value => setNewInformation3(value)} returnKeyType={'done'} />
         
-        <Button />
+        <Button title="Submit" onPress={handleAddNewInformation} />
 
-    <ScrollView>
-    {
-
-        myInformations1.map(information => (
-        <TouchableOpacity key={information.id} style={styles.buttonInformation1} activeOpacity={0.6}>
+      <FlatList data={myInformations1} keyExtractor={item => item.id} renderItem={({ item }) => (
+        <TouchableOpacity  style={styles.buttonInformation1} activeOpacity={0.6} onPress={() => handleRemoveInformation(item.id)}>
             <Text style={[styles.title, {marginTop: 5}]}>Name</Text>
-            <Text style={styles.textInformation1}>{information.name1}</Text>
+            <Text style={styles.textInformation1}>{item.name1}</Text>
             <Text style={[styles.title, {marginTop: 8}]}>Telephone</Text>
-            <Text style={styles.textInformation2}>{information.name2}</Text>
+            <Text style={styles.textInformation2}>{item.name2}</Text>
             <Text style={[styles.title, {marginTop: 8}]}>Email</Text>
-            <Text style={styles.textInformation3}>{information.name3}</Text>
+            <Text style={styles.textInformation3}>{item.name3}</Text>
         </TouchableOpacity>
-        ))
-    }
-    </ScrollView>
+        )}/>
 
     </View>
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -123,7 +136,8 @@ const styles = StyleSheet.create({
         color: '#523d7c',
         fontSize: 12,
         fontWeight: 'bold'
+    },
+    greetings: {
+        color: '#794C74',
     }
 })
-
-//aula 17/08 58min => ver flatlist
