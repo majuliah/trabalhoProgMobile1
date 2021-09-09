@@ -1,47 +1,34 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, Platform, TouchableOpacity, ScrollView } from 'react-native';
+import { Button } from '../components/Button';
 
 
-interface IInformationData1{
-    id1: string;
+interface IInformationData{
+
+    id: string;
     name1: string;
-    id2: string;
     name2: string;
-    id3: string;
     name3: string;
 }
-
-// interface IInformationData2{
-//     id: string;
-//     name2: string;
-// }
-
-// interface IInformationData3{
-//     id: string;
-//     name3: string;
-// }
 
 export function Home() {
     const [newInformation1, setNewInformation1] = useState('')
     const [newInformation2, setNewInformation2] = useState('')
     const [newInformation3, setNewInformation3] = useState('')
 
-    const [myInformations1, setMyInformations1] = useState<IInformationData1[]>([])
-    // const [myInformations2, setMyInformations2] = useState<IInformationData2[]>([])
-    // const [myInformations3, setMyInformations3] = useState<IInformationData3[]>([])
+    const [myInformations1, setMyInformations1] = useState<IInformationData[]>([])
 
     function handleAddNewInformation(){
         const data = {
-            id1: String(new Date().getTime()),
+
+            id: String(new Date().getTime()),
             name1: newInformation1,
-            id2: String(new Date().getTime()),
             name2: newInformation2,
-            id3: String(new Date().getTime()),
             name3: newInformation3,
+
         }
         setMyInformations1([...myInformations1, data])
-        // setMyInformations2([...myInformations2, data])
-        // setMyInformations3([...myInformations3, data])
+
         setNewInformation1('')
         setNewInformation2('')
         setNewInformation3('')
@@ -53,25 +40,23 @@ export function Home() {
     <View style={styles.container}>
       <Text style={styles.title}>Hey You, Welcome!</Text>
 
-      <TextInput style={styles.input1} placeholder='Name' placeholderTextColor='#81bb94' value={newInformation1} onChangeText={value => setNewInformation1(value)}/>
-      <TextInput style={styles.input2} placeholder='Telephone' placeholderTextColor='#e4c081' value={newInformation2} onChangeText={value => setNewInformation2(value)}/>
-      <TextInput style={styles.input3} placeholder='Email' placeholderTextColor='#e6a6a6' value={newInformation3} onChangeText={value => setNewInformation3(value)}/>
-        <TouchableOpacity style={styles.buttonAdd} activeOpacity={0.6}>
-            <Text style={styles.buttonText}>Add</Text>
-        </TouchableOpacity>
-
+      <TextInput style={styles.input1} placeholder='Name' placeholderTextColor='#81bb94' value={newInformation1} onChangeText={value => setNewInformation1(value)} returnKeyType={'done'}/>
+      <TextInput style={styles.input2} placeholder='Telephone' placeholderTextColor='#e4c081' value={newInformation2} onChangeText={value => setNewInformation2(value)} returnKeyType={'done'} />
+      <TextInput style={styles.input3} placeholder='Email' placeholderTextColor='#e6a6a6' value={newInformation3} onChangeText={value => setNewInformation3(value)} returnKeyType={'done'} />
+        
+        <Button />
 
     <ScrollView>
     {
 
         myInformations1.map(information => (
-        <TouchableOpacity style={styles.buttonInformation1} activeOpacity={0.6} onPress={handleAddNewInformation}>
+        <TouchableOpacity key={information.id} style={styles.buttonInformation1} activeOpacity={0.6}>
             <Text style={[styles.title, {marginTop: 5}]}>Name</Text>
-            <Text key={information.id1} style={styles.textInformation1}>{information.name1}</Text>
+            <Text style={styles.textInformation1}>{information.name1}</Text>
             <Text style={[styles.title, {marginTop: 8}]}>Telephone</Text>
-            <Text key={information.id2} style={styles.textInformation2}>{information.name2}</Text>
+            <Text style={styles.textInformation2}>{information.name2}</Text>
             <Text style={[styles.title, {marginTop: 8}]}>Email</Text>
-            <Text key={information.id3} style={styles.textInformation3}>{information.name3}</Text>
+            <Text style={styles.textInformation3}>{information.name3}</Text>
         </TouchableOpacity>
         ))
     }
@@ -117,19 +102,6 @@ const styles = StyleSheet.create({
         marginTop: 12,
         borderRadius: 9
     }, 
-    buttonAdd: {
-        backgroundColor: '#a2d7e7',
-        padding: 15,
-        borderRadius: 12,
-        alignItems: 'center',
-        marginTop: 15
-    },
-    buttonText: {
-        color: '#52aac5',
-        fontSize: 18,
-        fontWeight: 'bold',
-        
-    },
     buttonInformation1: {
         marginBottom: 12,
         backgroundColor: '#c3aed6ca',
@@ -154,4 +126,4 @@ const styles = StyleSheet.create({
     }
 })
 
-//não está retornando as informações D:
+//aula 17/08 58min => ver flatlist
