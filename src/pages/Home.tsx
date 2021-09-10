@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, TextInput, Platform, TouchableOpacity, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Button } from '../components/Button';
+import { Container, Grettings, Title, Input1,
+         Input2, Input3, ButtonInformation, 
+         TextInformation1, TextInformation2, 
+         TextInformation3 } from './styles';
 
 
 interface IInformationData{
@@ -49,95 +55,57 @@ export function Home() {
         }else{
             setGreetings('Good Night :)')
         }
+    }, []) //tinha um myInformations dentro do colchete
+
+    useEffect(() => {
+        async function loadData(){
+            const storageInformations = await AsyncStorage.getItem('@myInformations:informations')
+            if (storageInformations){
+                setMyInformations1(JSON.parse(storageInformations))
+            }
+        }
+        loadData()
+
+        // async function removeAll(){
+        //     await AsyncStorage.removeItem('@myInformations:informations')
+        // } //para excluir tudo :D
+
+    }, [])
+
+    useEffect(() => {
+        async function saveData() {
+            await AsyncStorage.setItem('@myInformations:informations', JSON.stringify(myInformations1))
+        }
+        saveData()
     }, [myInformations1])
 
   return (
     <>
-    <View style={styles.container}>
-      <Text style={styles.title}>Hey You, Welcome!</Text>
+    <Container>
+      <Title>Hey You, Welcome!</Title>
 
-      <Text style={styles.greetings}>{greetings}</Text>
+      <Grettings>{greetings}</Grettings>
 
-      <TextInput style={styles.input1} placeholder='Name' placeholderTextColor='#81bb94' value={newInformation1} onChangeText={value => setNewInformation1(value)} returnKeyType={'done'}/>
-      <TextInput style={styles.input2} placeholder='Telephone' placeholderTextColor='#e4c081' value={newInformation2} onChangeText={value => setNewInformation2(value)} returnKeyType={'done'} />
-      <TextInput style={styles.input3} placeholder='Email' placeholderTextColor='#e6a6a6' value={newInformation3} onChangeText={value => setNewInformation3(value)} returnKeyType={'done'} />
+      <Input1 placeholder='Name' placeholderTextColor='#81bb94' value={newInformation1} onChangeText={value => setNewInformation1(value)} returnKeyType={'done'}/>
+      <Input2 placeholder='Telephone' placeholderTextColor='#e4c081' value={newInformation2} onChangeText={value => setNewInformation2(value)} returnKeyType={'done'} />
+      <Input3 placeholder='Email' placeholderTextColor='#e6a6a6' value={newInformation3} onChangeText={value => setNewInformation3(value)} returnKeyType={'done'} />
         
         <Button title="Submit" onPress={handleAddNewInformation} />
 
       <FlatList data={myInformations1} keyExtractor={item => item.id} renderItem={({ item }) => (
-        <TouchableOpacity  style={styles.buttonInformation1} activeOpacity={0.6} onPress={() => handleRemoveInformation(item.id)}>
-            <Text style={[styles.title, {marginTop: 5}]}>Name</Text>
-            <Text style={styles.textInformation1}>{item.name1}</Text>
-            <Text style={[styles.title, {marginTop: 8}]}>Telephone</Text>
-            <Text style={styles.textInformation2}>{item.name2}</Text>
-            <Text style={[styles.title, {marginTop: 8}]}>Email</Text>
-            <Text style={styles.textInformation3}>{item.name3}</Text>
-        </TouchableOpacity>
+        <ButtonInformation activeOpacity={0.6} onPress={() => handleRemoveInformation(item.id)}>
+            <Title>Name</Title>
+            <TextInformation1>{item.name1}</TextInformation1>
+            <Title>Telephone</Title>
+            <TextInformation2>{item.name2}</TextInformation2>
+            <Title>Email</Title>
+            <TextInformation3>{item.name3}</TextInformation3>
+        </ButtonInformation>
         )}/>
 
-    </View>
+    </Container>
     </>
   )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#e2f0d7',
-        paddingHorizontal: 30,
-        paddingVertical: 70
-    },
-    title: {
-        color: '#C56183',
-        fontWeight: 'bold'
-    },
-    input1: {
-        backgroundColor: '#81bb9461',
-        color: '#81bb94',
-        fontSize: 15,
-        padding: Platform.OS === 'ios'? 12 : 10,
-        marginTop: 12,
-        borderRadius: 9
-    },
-    input2: {
-        backgroundColor: '#faddaaa9',
-        color: '#d1a14d',
-        fontSize: 15,
-        padding: Platform.OS === 'ios'? 12 : 10,
-        marginTop: 12,
-        borderRadius: 9
-    },
-    input3: {
-        backgroundColor: '#ffbcbca9',
-        color: '#c2758f',
-        fontSize: 15,
-        padding: Platform.OS === 'ios'? 12 : 10,
-        marginTop: 12,
-        borderRadius: 9
-    }, 
-    buttonInformation1: {
-        marginBottom: 12,
-        backgroundColor: '#c3aed6ca',
-        padding: 15,
-        borderRadius: 20,
-        alignItems: 'center'
-    },
-    textInformation1: {
-        color: '#645583',
-        fontSize: 22,
-        fontWeight: 'bold'
-    },
-    textInformation2: {
-        color: '#5f4e81',
-        fontSize: 17,
-        fontWeight: 'bold'
-    },
-    textInformation3: {
-        color: '#523d7c',
-        fontSize: 12,
-        fontWeight: 'bold'
-    },
-    greetings: {
-        color: '#794C74',
-    }
-})
+
