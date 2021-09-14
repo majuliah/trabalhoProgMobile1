@@ -12,56 +12,57 @@ import { Container, Grettings, Title, Input1,
 interface IInformationData{
 
     id: string;
-    name1: string;
-    name2: string;
-    name3: string;
+    name: string;
+    email: string;
+    telephone: string;
+    
 }
 
 export function Home() {
-    const [newInformation1, setNewInformation1] = useState('');
-    const [newInformation2, setNewInformation2] = useState('');
-    const [newInformation3, setNewInformation3] = useState('');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [telephone, setTelephone] = useState('');
 
-    const [myInformations1, setMyInformations1] = useState<IInformationData[]>([]);
+    const [myInformations, setMyInformations] = useState<IInformationData[]>([]);
     const [greetings, setGreetings] = useState('');
 
     function handleAddNewInformation(){
         const data = {
 
             id: String(new Date().getTime()),
-            name1: newInformation1,
-            name2: newInformation2,
-            name3: newInformation3,
+            name: name,
+            email: email,
+            telephone: telephone,
 
         }
-        setMyInformations1([...myInformations1, data])
+        setMyInformations([...myInformations, data])
 
-        setNewInformation1('')
-        setNewInformation2('')
-        setNewInformation3('')
+        setName('')
+        setEmail('')
+        setTelephone('')
         
     }
 
     function handleRemoveInformation( id: string){
-        setMyInformations1(myInformations1 => myInformations1.filter(information => information.id !== id))
+        setMyInformations(myInformations => myInformations.filter(information => information.id !== id))
     }
 
     useEffect(() => {
         const currentHour = new Date().getHours()
         if(currentHour < 12){
-            setGreetings('Good Morning :)')
+            setGreetings('Bão Dia :B')
         }else if( currentHour >= 12 && currentHour < 18){
-            setGreetings('Good Afternoom :)')
+            setGreetings('Boua Tarde :D')
         }else{
-            setGreetings('Good Night :)')
+            setGreetings('Bá Noite :B')
         }
-    }, []) //tinha um myInformations dentro do colchete
+    }, [])
 
     useEffect(() => {
         async function loadData(){
             const storageInformations = await AsyncStorage.getItem('@myInformations:informations')
             if (storageInformations){
-                setMyInformations1(JSON.parse(storageInformations))
+                setMyInformations(JSON.parse(storageInformations))
             }
         }
         loadData()
@@ -74,10 +75,10 @@ export function Home() {
 
     useEffect(() => {
         async function saveData() {
-            await AsyncStorage.setItem('@myInformations:informations', JSON.stringify(myInformations1))
+            await AsyncStorage.setItem('@myInformations:informations', JSON.stringify(myInformations))
         }
         saveData()
-    }, [myInformations1])
+    }, [myInformations])
 
   return (
     <>
@@ -86,20 +87,19 @@ export function Home() {
 
       <Grettings>{greetings}</Grettings>
 
-      <Input1 placeholder='Name' placeholderTextColor='#81bb94' value={newInformation1} onChangeText={value => setNewInformation1(value)} returnKeyType={'done'}/>
-      <Input2 placeholder='Telephone' placeholderTextColor='#e4c081' value={newInformation2} onChangeText={value => setNewInformation2(value)} returnKeyType={'done'} />
-      <Input3 placeholder='Email' placeholderTextColor='#e6a6a6' value={newInformation3} onChangeText={value => setNewInformation3(value)} returnKeyType={'done'} />
+      <Input1 placeholder='Name' placeholderTextColor='#81bb94' value={name} onChangeText={value => setName(value)} returnKeyType={'done'}/>
+      <Input2 placeholder='Telephone' placeholderTextColor='#e4c081' value={email} onChangeText={value => setEmail(value)} returnKeyType={'done'} />
+      <Input3 placeholder='Email' placeholderTextColor='#e6a6a6' value={telephone} onChangeText={value => setTelephone(value)} returnKeyType={'done'} />
         
         <Button title="Submit" onPress={handleAddNewInformation} />
 
-      <FlatList data={myInformations1} keyExtractor={item => item.id} renderItem={({ item }) => (
+      <FlatList data={myInformations} keyExtractor={item => item.id} renderItem={({ item }) => (
         <ButtonInformation activeOpacity={0.6} onPress={() => handleRemoveInformation(item.id)}>
-            <Title>Name</Title>
-            <TextInformation1>{item.name1}</TextInformation1>
-            <Title>Telephone</Title>
-            <TextInformation2>{item.name2}</TextInformation2>
-            <Title>Email</Title>
-            <TextInformation3>{item.name3}</TextInformation3>
+
+            <TextInformation1>{item.name}</TextInformation1>
+            <TextInformation2>{item.email}</TextInformation2>
+            <TextInformation3>{item.telephone}</TextInformation3>
+
         </ButtonInformation>
         )}/>
 

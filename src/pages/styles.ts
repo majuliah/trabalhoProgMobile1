@@ -4,9 +4,9 @@ import { Platform, TouchableOpacity  } from 'react-native';
 export const Container = styled.View`
         flex: 1px;
         background-color: #e2f0d7;
-        padding-right: 30px;
-        padding-left: 30px;
-        padding-top: 70px;
+        padding-right: 35px;
+        padding-left: 35px;
+        padding-top: 80px;
 `;
 
 export const Grettings = styled.Text`
@@ -15,7 +15,7 @@ export const Grettings = styled.Text`
 
 export const Title = styled.Text`
         color: #C56183;
-        font-size: 24px;
+        font-size: 27px;
         font-weight: bold;
 `;
 
